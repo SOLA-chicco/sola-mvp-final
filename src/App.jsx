@@ -379,7 +379,7 @@ const App = () => {
     <div className={`min-h-screen ${theme.bg} ${theme.text} font-sans selection:bg-lime-400 selection:text-black flex justify-center overflow-hidden transition-colors duration-500`}>
       
       {/* Mobile Wrapper */}
-      <div className={`w-full max-w-md ${theme.bg} min-h-screen relative flex flex-col shadow-2xl shadow-lime-900/20 border-x ${theme.border} transition-colors duration-500`}>
+     <div className="w-full md:max-w-md bg-zinc-950 min-h-screen relative flex flex-col md:shadow-2xl md:shadow-lime-900/20 md:border-x border-zinc-800">
         
         {/* Header & Status Bar */}
         <header className="p-6 pb-2 relative z-10">
