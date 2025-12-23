@@ -376,13 +376,12 @@ const App = () => {
   };
 
   return (
-    <div className={`min-h-screen ${theme.bg} ${theme.text} font-sans selection:bg-lime-400 selection:text-black flex justify-center overflow-hidden transition-colors duration-500`}>
-      
-      {/* Mobile Wrapper */}
-     <div className="w-full md:max-w-md bg-zinc-950 min-h-screen relative flex flex-col md:shadow-2xl md:shadow-lime-900/20 md:border-x border-zinc-800">
+  <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans selection:bg-lime-400 selection:text-black">
+  {/* Mobile Wrapper: Gunakan mx-auto untuk tengah di laptop, w-full untuk HP */}
+  <div className="w-full min-h-screen bg-zinc-950 relative flex flex-col md:max-w-md md:mx-auto md:shadow-2xl md:shadow-lime-900/20 md:border-x border-zinc-800">
         
         {/* Header & Status Bar */}
-        <header className="p-6 pb-2 relative z-10">
+        <header className="p-4 pb-2 relative z-10">
           
           <div className="flex justify-between items-start mb-6">
             <div className="flex flex-col gap-1">
@@ -478,7 +477,7 @@ const App = () => {
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-6 pt-2 pb-24 scrollbar-hide">
+        <main className="flex-1 overflow-y-auto p-4 pt-2 pb-24 scrollbar-hide">
           {/* DEVICE MENU */}
           {activeTab === 'dashboard' && mode === 'business' && (
             <div className="mb-4 animate-fade-in relative z-20">
