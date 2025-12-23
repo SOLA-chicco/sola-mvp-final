@@ -477,7 +477,7 @@ const App = () => {
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-4 pt-2 pb-24 scrollbar-hide">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
           {/* DEVICE MENU */}
           {activeTab === 'dashboard' && mode === 'business' && (
             <div className="mb-4 animate-fade-in relative z-20">
@@ -610,7 +610,7 @@ const SettingsView = ({ t, theme, isDarkMode, language, setLanguage, openInfo, c
   const itemClass = `flex items-center justify-between p-3 rounded-lg border ${isDarkMode ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`;
 
   return (
-    <div className="animate-fade-in space-y-4 pb-12">
+    <div className="w-full animate-fade-in space-y-3 pb-20">
       <div className="flex items-center justify-between mb-2">
          <h2 className={`text-2xl font-bold ${theme.text}`}>{t.settings_title}</h2>
          <span className={`text-[10px] px-2 py-1 rounded border ${isDarkMode ? 'bg-lime-400/10 text-lime-400 border-lime-400/20' : 'bg-emerald-100 text-emerald-700 border-emerald-200'}`}>v2.5.0</span>
@@ -1062,7 +1062,7 @@ const EnergyView = ({ t, theme, isDarkMode, openInfo }) => {
   const [currentLoad, setCurrentLoad] = useState(2450);
   useEffect(() => { const interval = setInterval(() => setCurrentLoad(prev => 2450 + (Math.floor(Math.random() * 100) - 50)), 1500); return () => clearInterval(interval); }, []);
   return (
-    <div className="animate-fade-in space-y-6">
+    <div className="w-full animate-fade-in space-y-5">
       <h2 className={`text-2xl font-bold mb-2 ${theme.text}`}>{t.energy_title}</h2>
       <div className="flex justify-center py-6"><div className={`w-64 h-64 rounded-full border-4 flex items-center justify-center relative ${isDarkMode ? 'border-zinc-800 bg-zinc-900/50' : 'border-zinc-200 bg-white'}`}><div className="absolute inset-0 rounded-full border-4 border-lime-400/30 border-t-lime-400 animate-spin-slow"></div><div className="text-center"><p className={`text-xs font-mono mb-1 ${theme.textSec}`}>{t.energy_current}</p><h3 className={`text-4xl font-bold tabular-nums ${theme.text}`}>{currentLoad}</h3><p className={`text-sm font-medium ${theme.accentText}`}>Watts</p></div><div className={`absolute -bottom-2 px-4 py-1 rounded-full border text-xs flex gap-2 ${theme.textSec} ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`}><span className="w-2 h-2 rounded-full bg-lime-500 animate-pulse"></span> Live</div></div></div>
       <div className="grid grid-cols-2 gap-4"><div className={`p-4 rounded-2xl border relative ${theme.card}`}><button onClick={() => openInfo('grid')} className={`absolute top-2 right-2 hover:${theme.text} ${theme.textSec}`}><HelpCircle size={12} /></button><div className="flex items-center gap-2 mb-2"><Zap size={16} className="text-yellow-400" /><span className={`text-xs ${theme.textSec}`}>{t.energy_grid}</span></div><p className={`text-xl font-bold ${theme.text}`}>45%</p><div className={`w-full h-1 mt-2 rounded-full ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}><div className="bg-yellow-400 h-1 rounded-full w-[45%]"></div></div></div><div className={`p-4 rounded-2xl border relative ${theme.card}`}><button onClick={() => openInfo('solar')} className={`absolute top-2 right-2 hover:${theme.text} ${theme.textSec}`}><HelpCircle size={12} /></button><div className="flex items-center gap-2 mb-2"><Sun size={16} className={theme.accentText} /><span className={`text-xs ${theme.textSec}`}>{t.energy_solar}</span></div><p className={`text-xl font-bold ${theme.text}`}>55%</p><div className={`w-full h-1 mt-2 rounded-full ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}><div className={`h-1 rounded-full w-[55%] ${theme.accentBg}`}></div></div></div></div>
