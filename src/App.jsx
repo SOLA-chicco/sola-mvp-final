@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Zap, Home, Briefcase, TrendingUp, AlertTriangle, Wind, Settings, 
   User, Sun, BatteryCharging, Plane, ChevronRight, Globe, Bell, 
@@ -9,10 +9,9 @@ import {
   Smartphone, Mail, Command, Layers, FileCheck
 } from 'lucide-react';
 
-// --- TRANSLATION DATA (Sama seperti sebelumnya) ---
+// --- TRANSLATION DATA ---
 const TRANSLATIONS = {
   id: {
-    // Nav & General
     mode_business: "Profit Mode",
     mode_home: "Dream Mode",
     nav_dashboard: "Beranda",
@@ -21,8 +20,6 @@ const TRANSLATIONS = {
     consultation: "Konsultasi Sola",
     status_online: "Online",
     weather_label: "Cerah",
-    
-    // B2B Dashboard
     b2b_margin_title: "Margin Profit Tambahan",
     b2b_margin_desc: "Efisiensi energi langsung dikonversi menjadi laba bersih.",
     b2b_input_vol: "Input Volume Produksi",
@@ -37,8 +34,6 @@ const TRANSLATIONS = {
     b2b_edit_profile: "Edit Profil Bisnis",
     b2b_export: "Unduh Laporan",
     b2b_export_success: "Laporan PDF berhasil diunduh.",
-    
-    // B2C Dashboard
     b2c_status_power: "Status Daya",
     b2c_safe_load: "Load Aman",
     b2c_dream_title: "Impian",
@@ -50,8 +45,6 @@ const TRANSLATIONS = {
     b2c_edit_goal: "Atur Impian",
     b2c_share: "Bagikan",
     b2c_share_success: "Siap dibagikan ke Instagram Story!",
-    
-    // System Health & Support
     sys_health_ok: "Sistem Sehat",
     sys_health_warn: "Perlu Perawatan",
     sys_health_msg: "Efisiensi panel turun 15% (Kotor).",
@@ -59,8 +52,6 @@ const TRANSLATIONS = {
     chat_placeholder: "Ketik pesan...",
     chat_welcome: "Halo! Ada yang bisa Sola bantu hari ini?",
     chat_auto_maintenance: "Halo Sola, sistem mendeteksi efisiensi turun (panel kotor). Tolong jadwalkan perawatan.",
-    
-    // SETTINGS CATEGORIES
     settings_cat_general: "Umum & Preferensi",
     settings_cat_general_sub: "Bahasa, Mata Uang, Tema",
     settings_cat_energy: "Konfigurasi Energi",
@@ -69,8 +60,6 @@ const TRANSLATIONS = {
     settings_cat_notif_sub: "Notifikasi Granular",
     settings_cat_dev: "Developer API",
     settings_cat_dev_sub: "Kunci, Webhooks, Integrasi",
-
-    // SETTINGS ITEMS
     settings_lang: "Bahasa & Wilayah",
     settings_currency: "Tampilan Mata Uang",
     settings_dark_mode: "Mode Gelap",
@@ -84,8 +73,6 @@ const TRANSLATIONS = {
     settings_channels: "Saluran Pengiriman",
     settings_api_key: "Kunci API (Produksi)",
     settings_webhook: "URL Webhook",
-    
-    // PROFILE ITEMS
     profile_role: "Pemilik Bisnis",
     profile_team: "Anggota Tim",
     profile_invite: "Undang",
@@ -97,8 +84,6 @@ const TRANSLATIONS = {
     profile_current_plan: "Paket Saat Ini",
     profile_invoices: "Faktur",
     btn_logout: "Keluar",
-
-    // INFO MODALS
     info_vol_title: "Volume Produksi",
     info_vol_desc: "Masukkan jumlah produk yang Anda hasilkan hari ini untuk menghitung seberapa besar penghematan listrik per barang.",
     info_grid_title: "Sumber Grid (PLN)",
@@ -123,8 +108,6 @@ const TRANSLATIONS = {
     info_site_id_desc: "Kode unik untuk lokasi pemasangan ini. Berikan kode ini kepada teknisi saat melakukan maintenance.",
     info_sla_title: "SLA Agreement",
     info_sla_desc: "Dokumen kontrak jaminan tingkat layanan. Menjelaskan garansi uptime dan respon support untuk akun Enterprise.",
-    
-    // Generic
     notif_title: "Notifikasi",
     notif_empty: "Tidak ada notifikasi baru.",
     device_selector: "Pilih Cabang / Device",
@@ -177,7 +160,6 @@ const TRANSLATIONS = {
     chat_placeholder: "Type a message...",
     chat_welcome: "Hello! How can Sola help you today?",
     chat_auto_maintenance: "Hi Sola, system detected efficiency drop (dirty panels). Please schedule maintenance.",
-    
     settings_cat_general: "General & Preferences",
     settings_cat_general_sub: "Language, Currency, Theme",
     settings_cat_energy: "Energy Configuration",
@@ -186,7 +168,6 @@ const TRANSLATIONS = {
     settings_cat_notif_sub: "Granular Notifications",
     settings_cat_dev: "Developer API",
     settings_cat_dev_sub: "Keys, Webhooks, Integration",
-    
     settings_lang: "Language & Region",
     settings_currency: "Currency Display",
     settings_dark_mode: "Dark Mode",
@@ -200,7 +181,6 @@ const TRANSLATIONS = {
     settings_channels: "Delivery Channels",
     settings_api_key: "API Key (Production)",
     settings_webhook: "Webhook URL",
-
     profile_role: "Business Owner",
     profile_team: "Team Members",
     profile_invite: "Invite",
@@ -212,7 +192,6 @@ const TRANSLATIONS = {
     profile_current_plan: "Current Plan",
     profile_invoices: "Invoices",
     btn_logout: "Logout",
-
     info_vol_title: "Production Volume",
     info_vol_desc: "Enter the number of products made today to calculate electricity savings per item.",
     info_grid_title: "Grid Source",
@@ -237,7 +216,6 @@ const TRANSLATIONS = {
     info_site_id_desc: "Unique code for this installation site. Provide this to technicians during maintenance.",
     info_sla_title: "SLA Agreement",
     info_sla_desc: "Service Level Agreement contract. Explains uptime guarantees and support response times for Enterprise accounts.",
-
     notif_title: "Notifications",
     notif_empty: "No new notifications.",
     device_selector: "Select Branch / Device",
@@ -258,8 +236,6 @@ const TRANSLATIONS = {
     consultation: "Sola相談",
     status_online: "オンライン",
     weather_label: "晴れ",
-    
-    // B2B Dashboard
     b2b_margin_title: "追加利益率",
     b2b_margin_desc: "エネルギー効率が純利益に直結します。",
     b2b_input_vol: "生産量入力",
@@ -274,8 +250,6 @@ const TRANSLATIONS = {
     b2b_edit_profile: "ビジネスプロフィールの編集",
     b2b_export: "レポートをダウンロード",
     b2b_export_success: "PDFレポートが正常にダウンロードされました。",
-    
-    // B2C Dashboard
     b2c_status_power: "電力状況",
     b2c_safe_load: "安全負荷",
     b2c_dream_title: "夢の目標",
@@ -287,8 +261,6 @@ const TRANSLATIONS = {
     b2c_edit_goal: "夢の目標を設定",
     b2c_share: "共有",
     b2c_share_success: "Instagramストーリーで共有する準備ができました！",
-    
-    // System Health & Support
     sys_health_ok: "システム正常",
     sys_health_warn: "メンテナンスが必要",
     sys_health_msg: "効率が15%低下しました（汚れ）。",
@@ -296,8 +268,6 @@ const TRANSLATIONS = {
     chat_placeholder: "メッセージを入力...",
     chat_welcome: "こんにちは！今日はどのようなお手伝いができますか？",
     chat_auto_maintenance: "こんにちはSola、効率の低下（パネルの汚れ）を検出しました。メンテナンスを予約してください。",
-    
-    // SETTINGS CATEGORIES
     settings_cat_general: "一般と設定",
     settings_cat_general_sub: "言語、通貨、テーマ",
     settings_cat_energy: "エネルギー構成",
@@ -306,8 +276,6 @@ const TRANSLATIONS = {
     settings_cat_notif_sub: "詳細な通知設定",
     settings_cat_dev: "開発者API",
     settings_cat_dev_sub: "キー、Webhook、統合",
-
-    // SETTINGS ITEMS
     settings_lang: "言語と地域",
     settings_currency: "通貨表示",
     settings_dark_mode: "ダークモード",
@@ -321,8 +289,6 @@ const TRANSLATIONS = {
     settings_channels: "配信チャンネル",
     settings_api_key: "APIキー (本番)",
     settings_webhook: "Webhook URL",
-    
-    // PROFILE ITEMS
     profile_role: "ビジネスオーナー",
     profile_team: "チームメンバー",
     profile_invite: "招待",
@@ -334,8 +300,6 @@ const TRANSLATIONS = {
     profile_current_plan: "現在のプラン",
     profile_invoices: "請求書",
     btn_logout: "ログアウト",
-
-    // INFO MODALS
     info_vol_title: "生産量",
     info_vol_desc: "今日製造された製品の数を入力して、アイテムごとの電気代節約を計算します。",
     info_grid_title: "グリッド電源",
@@ -360,8 +324,6 @@ const TRANSLATIONS = {
     info_site_id_desc: "この設置場所の固有コード。メンテナンス中に技術者にこれを提示してください。",
     info_sla_title: "SLA契約",
     info_sla_desc: "サービスレベルアグリーメント契約。エンタープライズアカウントの稼働時間保証とサポート対応時間について説明します。",
-    
-    // Generic
     notif_title: "通知",
     notif_empty: "新しい通知はありません。",
     device_selector: "支店/デバイスを選択",
@@ -493,10 +455,10 @@ function SettingsView({ t, theme, isDarkMode, language, setLanguage, openInfo, c
       <div className="flex items-center gap-3"><div className={`p-2 rounded-lg ${activeSection === id ? `${theme.accentBg} text-black` : `${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-100'} ${theme.textSec}`}`}>{React.cloneElement(icon, { size: 18 })}</div><div className="text-left"><h4 className={`text-sm font-bold ${activeSection === id ? theme.text : theme.textSec}`}>{title}</h4>{subtitle && <p className={`text-[10px] ${theme.textSec}`}>{subtitle}</p>}</div></div><ChevronUp className={`${theme.textSec} transition-transform ${activeSection === id ? '' : 'rotate-180'}`} size={16} />
     </button>
   );
-  const containerClass = `${theme.card} border-t-0 rounded-b-2xl p-4 space-y-4 transition-all duration-300`; 
+  const containerClass = `${theme.card} border-t-0 rounded-b-2xl p-4 space-y-4`; 
   const itemClass = `flex items-center justify-between p-3 rounded-lg border ${isDarkMode ? 'bg-zinc-950 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`;
   return (
-    <div className="space-y-4 pb-12 w-full transition-all duration-300">
+    <div className="space-y-4 pb-12 w-full">
       <div className="flex items-center justify-between mb-2"><h2 className={`text-2xl font-bold ${theme.text}`}>{t.settings_title}</h2><span className={`text-[10px] px-2 py-1 rounded border ${isDarkMode ? 'bg-lime-400/10 text-lime-400 border-lime-400/20' : 'bg-emerald-100 text-emerald-700 border-emerald-200'}`}>v2.6.2</span></div>
       <div className="space-y-0 w-full"><SectionHeader id="general" icon={<Settings />} title={t.settings_cat_general} subtitle={t.settings_cat_general_sub} />{activeSection === 'general' && (<div className={containerClass}><div className="space-y-1"><label className={`text-xs ${theme.textSec}`}>{t.settings_lang}</label><div className="flex gap-2">{['id', 'en', 'jp'].map(l => (<button key={l} onClick={()=>setLanguage(l)} className={`flex-1 py-2 text-xs rounded border ${language===l ? `${theme.accentBg} text-black font-bold border-transparent` : `${theme.inputBg} ${theme.textSec} ${theme.inputBorder}`}`}>{l.toUpperCase()}</button>))}</div></div><div className={itemClass}><span className={`text-xs ${theme.textSec}`}>{t.settings_currency}</span><select value={currency} onChange={(e) => setCurrency(e.target.value)} className={`${theme.inputBg} ${theme.inputBorder} border rounded p-1 text-xs ${theme.accentText} focus:outline-none`}><option value="IDR">IDR (Rp)</option><option value="USD">USD ($)</option></select></div><button onClick={toggleTheme} className={`w-full ${itemClass}`}><span className={`text-xs ${theme.textSec}`}>{t.settings_dark_mode}</span><div className={`w-8 h-4 rounded-full relative transition-colors ${isDarkMode ? 'bg-lime-400' : 'bg-zinc-300'}`}><div className={`absolute top-0.5 w-3 h-3 bg-black rounded-full transition-all ${isDarkMode ? 'right-0.5' : 'left-0.5'}`}></div></div></button></div>)}</div>
       <div className="space-y-0 w-full"><SectionHeader id="energy" icon={<Zap />} title={t.settings_cat_energy} subtitle={t.settings_cat_energy_sub} />{activeSection === 'energy' && (<div className={containerClass}><div className="grid grid-cols-2 gap-3 w-full"><div className="space-y-1"><label className={`text-[10px] ${theme.textSec} flex items-center gap-1`}>{t.settings_tariff}<button onClick={() => openInfo('tariff')} className="hover:text-current"><HelpCircle size={10} /></button></label><input type="number" defaultValue="1444" className={`w-full ${theme.inputBg} ${theme.inputBorder} border rounded p-2 text-xs ${theme.inputText}`} /></div><div className="space-y-1"><label className={`text-[10px] ${theme.textSec} flex items-center gap-1`}>{t.settings_grid_limit}<button onClick={() => openInfo('grid_limit')} className="hover:text-current"><HelpCircle size={10} /></button></label><input type="number" defaultValue="6600" className={`w-full ${theme.inputBg} ${theme.inputBorder} border rounded p-2 text-xs ${theme.inputText}`} /></div></div><div className={`space-y-2 pt-2 border-t ${theme.border}`}><div className="flex justify-between text-xs"><span className={`${theme.textSec} flex items-center gap-1`}>{t.settings_batt_threshold}<button onClick={() => openInfo('batt_threshold')} className="hover:text-current"><HelpCircle size={10} /></button></span><span className={theme.accentText}>{batteryThreshold}%</span></div><input type="range" min="0" max="100" value={batteryThreshold} onChange={e=>setBatteryThreshold(e.target.value)} className={`w-full h-1.5 rounded-lg appearance-none cursor-pointer ${isDarkMode ? 'bg-zinc-800 accent-lime-400' : 'bg-zinc-200 accent-emerald-600'}`} /><p className={`text-[10px] ${theme.textSec}`}>{t.settings_batt_desc}</p></div><div className={itemClass}><div><p className={`text-xs ${theme.text} flex items-center gap-1`}>{t.settings_export}<button onClick={() => openInfo('export')} className={`${theme.textSec} hover:text-current`}><HelpCircle size={10} /></button></p><p className={`text-[10px] ${theme.textSec}`}>{t.settings_export_desc}</p></div><div className={`w-8 h-4 rounded-full relative ${isDarkMode ? 'bg-zinc-700' : 'bg-zinc-300'}`}><div className={`absolute left-0.5 top-0.5 w-3 h-3 bg-white rounded-full`}></div></div></div></div>)}</div>
@@ -513,7 +475,7 @@ function BusinessView({ t, theme, isDarkMode, productionVol, setProductionVol, o
   const savedAmount = totalCost * solaSavingsPercent;
   const profitMarginBoost = ((savedAmount / (totalCost - savedAmount)) * 100).toFixed(1);
   return (
-    <div className="space-y-4 transition-all duration-300">
+    <div className="space-y-4">
       <div className={`rounded-2xl p-6 border relative overflow-hidden group ${theme.card}`}>
         <div className={`absolute top-0 right-0 w-32 h-32 blur-3xl rounded-full -mr-10 -mt-10 ${isDarkMode ? 'bg-lime-400/10' : 'bg-emerald-400/20'}`}></div>
         <div className="flex items-start justify-between mb-2">
@@ -545,7 +507,7 @@ function BusinessView({ t, theme, isDarkMode, productionVol, setProductionVol, o
 function HomeView({ t, theme, isDarkMode, dreamGoal, onEditGoal, onShare }) {
   const progress = Math.min((dreamGoal.current / dreamGoal.target) * 100, 100);
   return (
-    <div className="space-y-6 transition-all duration-300">
+    <div className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
         <div className={`p-4 rounded-2xl border relative overflow-hidden ${theme.card}`}><div className="flex flex-col h-full justify-between"><div className="flex justify-between items-start"><AlertTriangle size={24} className={theme.accentText} /><div className="w-2 h-2 rounded-full bg-lime-500 animate-ping"></div></div><div><h4 className={`text-xs font-medium ${theme.textSec}`}>{t.b2c_status_power}</h4><p className={`font-bold text-lg ${theme.text}`}>Anti-Jepret</p><p className={`text-xs mt-1 ${theme.accentText}`}>{t.b2c_safe_load} (65%)</p></div></div></div>
         <div className={`bg-gradient-to-br p-4 rounded-2xl border ${isDarkMode ? 'from-zinc-800 to-zinc-900 border-zinc-700/50' : 'from-sky-50 to-white border-zinc-200'}`}><div className="flex flex-col h-full justify-between"><Wind size={24} className="text-sky-400" /><div><h4 className={`text-xs font-medium ${theme.textSec}`}>AC Master Bedroom</h4><p className={`font-bold text-lg ${theme.text}`}>Guilt-Free</p><p className="text-sky-400 text-xs mt-1">Powered by Solar</p></div></div></div>
@@ -570,7 +532,7 @@ function EnergyView({ t, theme, isDarkMode, openInfo }) {
   const [currentLoad, setCurrentLoad] = useState(2450);
   useEffect(() => { const interval = setInterval(() => setCurrentLoad(prev => 2450 + (Math.floor(Math.random() * 100) - 50)), 1500); return () => clearInterval(interval); }, []);
   return (
-    <div className="space-y-4 transition-all duration-300">
+    <div className="space-y-4">
       <h2 className={`text-2xl font-bold mb-2 ${theme.text}`}>{t.energy_title}</h2>
       <div className="flex justify-center py-6"><div className={`w-64 h-64 rounded-full border-4 flex items-center justify-center relative ${isDarkMode ? 'border-zinc-800 bg-zinc-900/50' : 'border-zinc-200 bg-white'}`}><div className="absolute inset-0 rounded-full border-4 border-lime-400/30 border-t-lime-400 animate-spin-slow"></div><div className="text-center"><p className={`text-xs font-mono mb-1 ${theme.textSec}`}>{t.energy_current}</p><h3 className={`text-4xl font-bold tabular-nums ${theme.text}`}>{currentLoad}</h3><p className={`text-sm font-medium ${theme.accentText}`}>Watts</p></div><div className={`absolute -bottom-2 px-4 py-1 rounded-full border text-xs flex gap-2 ${theme.textSec} ${isDarkMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`}><span className="w-2 h-2 rounded-full bg-lime-500 animate-pulse"></span> Live</div></div></div>
       <div className="grid grid-cols-2 gap-4"><div className={`p-4 rounded-2xl border relative ${theme.card}`}><button onClick={() => openInfo('grid')} className={`absolute top-2 right-2 hover:${theme.text} ${theme.textSec}`}><HelpCircle size={12} /></button><div className="flex items-center gap-2 mb-2"><Zap size={16} className="text-yellow-400" /><span className={`text-xs ${theme.textSec}`}>{t.energy_grid}</span></div><p className={`text-xl font-bold ${theme.text}`}>45%</p><div className={`w-full h-1 mt-2 rounded-full ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}><div className="bg-yellow-400 h-1 rounded-full w-[45%]"></div></div></div><div className={`p-4 rounded-2xl border relative ${theme.card}`}><button onClick={() => openInfo('solar')} className={`absolute top-2 right-2 hover:${theme.text} ${theme.textSec}`}><HelpCircle size={12} /></button><div className="flex items-center gap-2 mb-2"><Sun size={16} className={theme.accentText} /><span className={`text-xs ${theme.textSec}`}>{t.energy_solar}</span></div><p className={`text-xl font-bold ${theme.text}`}>55%</p><div className={`w-full h-1 mt-2 rounded-full ${isDarkMode ? 'bg-zinc-800' : 'bg-zinc-200'}`}><div className={`h-1 rounded-full w-[55%] ${theme.accentBg}`}></div></div></div></div>
@@ -672,7 +634,7 @@ const App = () => {
     <div className={`h-[100dvh] w-full ${theme.bg} ${theme.text} font-sans selection:bg-lime-400 selection:text-black flex justify-center overflow-hidden transition-colors duration-500`}>
       <div className={`w-full max-w-md ${theme.bg} h-full relative flex flex-col shadow-2xl shadow-lime-900/20 border-x ${theme.border} transition-colors duration-500`}>
         {/* Header & Status Bar */}
-        <header className="p-4 pb-2 relative z-10 shrink-0">
+        <header className="px-4 pt-4 pb-2 relative z-10 shrink-0">
           <div className="flex justify-between items-start mb-6">
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
@@ -727,7 +689,7 @@ const App = () => {
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-4 pt-2 pb-24 scrollbar-hide w-full">
+        <main className="flex-1 overflow-y-auto px-4 pt-2 pb-24 scrollbar-hide w-full">
           {activeTab === 'dashboard' && mode === 'business' && (
             <div className="mb-4 animate-fade-in relative z-20">
               <button onClick={() => setIsDeviceMenuOpen(!isDeviceMenuOpen)} className="flex items-center gap-2 group"><span className={`text-sm font-bold group-hover:${theme.accentText} transition-colors ${theme.text}`}>{currentDevice}</span><ChevronDown size={14} className={`${theme.textSec} transition-transform ${isDeviceMenuOpen ? 'rotate-180' : ''}`} /></button>
